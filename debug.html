@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>API Key 調試頁面</title>
+  <script defer="defer" src="./api-key-integration.js"></script>
+  <script defer="defer" src="./api-key-fix.js"></script>
+  <script defer="defer" src="./api-key-setup.js"></script>
+  <script defer="defer" src="./api-key-manager.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .status {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      font-weight: 500;
+    }
+    .status.valid {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .status.invalid {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .info {
+      background: #e7f3ff;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      border: 1px solid #b3d9ff;
+    }
+    .button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      margin: 0.5rem;
+      transition: background-color 0.3s;
+    }
+    .button:hover {
+      background: #0056b3;
+    }
+    .button.danger {
+      background: #dc3545;
+    }
+    .button.danger:hover {
+      background: #c82333;
+    }
+    .button.success {
+      background: #28a745;
+    }
+    .button.success:hover {
+      background: #218838;
+    }
+    .button.warning {
+      background: #ffc107;
+      color: #212529;
+    }
+    .button.warning:hover {
+      background: #e0a800;
+    }
+    .code {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      margin: 1rem 0;
+      border: 1px solid #e9ecef;
+      white-space: pre-wrap;
+    }
+    .log {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      border: 1px solid #e9ecef;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+    .section {
+      background: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔧 API Key 調試頁面</h1>
+    
+    <div id="status" class="status">
+      正在檢查 API Key 狀態...
+    </div>
+    
+    <div class="info">
+      <h3>📋 調試說明</h3>
+      <p>這個頁面用於調試 API Key 設置和修復功能。</p>
+      <ul>
+        <li>檢查 localStorage 中的 API Key</li>
+        <li>測試修復腳本是否正常工作</li>
+        <li>模擬應用程式的 API Key 檢查</li>
+        <li>查看詳細的調試日誌</li>
+      </ul>
+    </div>
+    
+    <div class="grid">
+      <div class="section">
+        <h3>🔍 狀態檢查</h3>
+        <button class="button" onclick="checkStatus()">檢查狀態</button>
+        <button class="button success" onclick="testGetApiKey()">測試 getApiKey()</button>
+        <button class="button warning" onclick="testFix()">測試修復功能</button>
+        <div id="statusOutput" class="code">點擊按鈕開始測試...</div>
+      </div>
+      
+      <div class="section">
+        <h3>🔧 修復工具</h3>
+        <button class="button success" onclick="setTestApiKey()">設置測試 API Key</button>
+        <button class="button danger" onclick="clearApiKey()">清除 API Key</button>
+        <button class="button warning" onclick="forceFix()">強制修復</button>
+        <div id="fixOutput" class="code">點擊按鈕開始修復...</div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h3>📝 調試日誌</h3>
+      <button class="button" onclick="clearLog()">清除日誌</button>
+      <button class="button" onclick="exportLog()">匯出日誌</button>
+      <div id="debugLog" class="log">調試日誌將在這裡顯示...</div>
+    </div>
+    
+    <div class="section">
+      <h3>🧪 模擬測試</h3>
+      <button class="button" onclick="simulateError()">模擬錯誤</button>
+      <button class="button" onclick="simulateAppCheck()">模擬應用程式檢查</button>
+      <button class="button" onclick="testIntegration()">測試整合</button>
+      <div id="simulationOutput" class="code">模擬測試結果將在這裡顯示...</div>
+    </div>
+  </div>
+
+  <script>
+    let logMessages = [];
+    
+    // 添加日誌
+    function addLog(message, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString();
+      const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}`;
+      logMessages.push(logEntry);
+      
+      const logDiv = document.getElementById('debugLog');
+      logDiv.textContent = logMessages.join('\n');
+      logDiv.scrollTop = logDiv.scrollHeight;
+      
+      console.log(logEntry);
+    }
+    
+    // 更新狀態顯示
+    function updateStatus() {
+      const apiKey = localStorage.getItem('google_ai_api_key') || '';
+      const statusDiv = document.getElementById('status');
+      const isValid = apiKey && apiKey.length >= 30;
+      
+      statusDiv.className = `status ${isValid ? 'valid' : 'invalid'}`;
+      statusDiv.innerHTML = isValid 
+        ? `✅ API Key 已設置且格式正確 (${apiKey.length} 個字符)`
+        : `❌ API Key 未設置或格式不正確 (當前: ${apiKey.length} 個字符)`;
+        
+      addLog(`狀態更新: ${isValid ? '有效' : '無效'} API Key`);
+    }
+    
+    // 檢查狀態
+    function checkStatus() {
+      const output = document.getElementById('statusOutput');
+      const apiKey = localStorage.getItem('google_ai_api_key') || '';
+      const isValid = apiKey && apiKey.length >= 30;
+      
+      let result = `API Key 狀態檢查:\n`;
+      result += `- localStorage 中的 key: ${apiKey ? '存在' : '不存在'}\n`;
+      result += `- key 長度: ${apiKey.length} 個字符\n`;
+      result += `- 格式驗證: ${isValid ? '通過' : '失敗'}\n`;
+      result += `- 全局 getApiKey 函數: ${typeof window.getApiKey === 'function' ? '存在' : '不存在'}\n`;
+      
+      if (window.getApiKey) {
+        const globalKey = window.getApiKey();
+        result += `- 全局函數返回值: ${globalKey ? '有效' : '無效'}\n`;
+      }
+      
+      output.textContent = result;
+      addLog('執行狀態檢查');
+    }
+    
+    // 測試 getApiKey 函數
+    function testGetApiKey() {
+      const output = document.getElementById('statusOutput');
+      let result = `getApiKey() 函數測試:\n`;
+      
+      if (typeof window.getApiKey === 'function') {
+        try {
+          const apiKey = window.getApiKey();
+          result += `- 函數執行: 成功\n`;
+          result += `- 返回值: ${apiKey ? '有效' : '無效'}\n`;
+          result += `- 返回值長度: ${apiKey ? apiKey.length : 0} 個字符\n`;
+        } catch (error) {
+          result += `- 函數執行: 失敗\n`;
+          result += `- 錯誤: ${error.message}\n`;
+        }
+      } else {
+        result += `- 函數存在: 否\n`;
+      }
+      
+      output.textContent = result;
+      addLog('測試 getApiKey 函數');
+    }
+    
+    // 測試修復功能
+    function testFix() {
+      const output = document.getElementById('statusOutput');
+      let result = `修復功能測試:\n`;
+      
+      if (window.apiKeyFix) {
+        result += `- apiKeyFix 對象: 存在\n`;
+        result += `- check() 方法: ${typeof window.apiKeyFix.check === 'function' ? '存在' : '不存在'}\n`;
+        result += `- fix() 方法: ${typeof window.apiKeyFix.fix === 'function' ? '存在' : '不存在'}\n`;
+        result += `- get() 方法: ${typeof window.apiKeyFix.get === 'function' ? '存在' : '不存在'}\n`;
+        
+        if (window.apiKeyFix.check) {
+          const isValid = window.apiKeyFix.check();
+          result += `- 檢查結果: ${isValid ? '有效' : '無效'}\n`;
+        }
+      } else {
+        result += `- apiKeyFix 對象: 不存在\n`;
+      }
+      
+      if (window.fixApiKeyIssue) {
+        result += `- fixApiKeyIssue 函數: 存在\n`;
+      } else {
+        result += `- fixApiKeyIssue 函數: 不存在\n`;
+      }
+      
+      output.textContent = result;
+      addLog('測試修復功能');
+    }
+    
+    // 設置測試 API Key
+    function setTestApiKey() {
+      const output = document.getElementById('fixOutput');
+      const testKey = 'test-api-key-' + Date.now() + '-very-long-key-for-testing';
+      localStorage.setItem('google_ai_api_key', testKey);
+      
+      output.textContent = `設置測試 API Key:\n- Key: ${testKey}\n- 長度: ${testKey.length} 個字符\n- 狀態: 已保存`;
+      
+      updateStatus();
+      addLog('設置測試 API Key');
+    }
+    
+    // 清除 API Key
+    function clearApiKey() {
+      const output = document.getElementById('fixOutput');
+      localStorage.removeItem('google_ai_api_key');
+      
+      output.textContent = `清除 API Key:\n- 狀態: 已清除\n- localStorage: 已清空`;
+      
+      updateStatus();
+      addLog('清除 API Key');
+    }
+    
+    // 強制修復
+    function forceFix() {
+      const output = document.getElementById('fixOutput');
+      let result = `強制修復執行:\n`;
+      
+      if (window.fixApiKeyIssue) {
+        try {
+          const success = window.fixApiKeyIssue();
+          result += `- 修復函數執行: 成功\n`;
+          result += `- 修復結果: ${success ? '成功' : '失敗'}\n`;
+        } catch (error) {
+          result += `- 修復函數執行: 失敗\n`;
+          result += `- 錯誤: ${error.message}\n`;
+        }
+      } else {
+        result += `- 修復函數: 不存在\n`;
+      }
+      
+      if (window.apiKeyFix && window.apiKeyFix.fix) {
+        try {
+          const success = window.apiKeyFix.fix();
+          result += `- apiKeyFix.fix() 執行: 成功\n`;
+          result += `- 修復結果: ${success ? '成功' : '失敗'}\n`;
+        } catch (error) {
+          result += `- apiKeyFix.fix() 執行: 失敗\n`;
+          result += `- 錯誤: ${error.message}\n`;
+        }
+      } else {
+        result += `- apiKeyFix.fix() 函數: 不存在\n`;
+      }
+      
+      output.textContent = result;
+      addLog('執行強制修復');
+    }
+    
+    // 模擬錯誤
+    function simulateError() {
+      const output = document.getElementById('simulationOutput');
+      addLog('模擬 API key 錯誤');
+      
+      // 模擬 console.error
+      console.error('API key未設置，請在開發環境中設置API key');
+      
+      output.textContent = `模擬錯誤執行:\n- 已觸發 console.error\n- 錯誤訊息: API key未設置，請在開發環境中設置API key\n- 檢查修復腳本是否檢測到錯誤`;
+    }
+    
+    // 模擬應用程式檢查
+    function simulateAppCheck() {
+      const output = document.getElementById('simulationOutput');
+      addLog('模擬應用程式 API key 檢查');
+      
+      // 模擬應用程式的檢查邏輯
+      const apiKey = window.getApiKey ? window.getApiKey() : null;
+      
+      output.textContent = `模擬應用程式檢查:\n- 調用 getApiKey(): ${apiKey ? '成功' : '失敗'}\n- 返回值: ${apiKey ? '有效' : '無效'}\n- 返回值長度: ${apiKey ? apiKey.length : 0} 個字符`;
+    }
+    
+    // 測試整合
+    function testIntegration() {
+      const output = document.getElementById('simulationOutput');
+      addLog('測試 API key 整合');
+      
+      let result = `整合測試結果:\n`;
+      
+      // 測試所有相關函數
+      const functions = [
+        'getApiKey',
+        'setApiKey', 
+        'isApiKeyValid',
+        'fixApiKeyIssue',
+        'apiKeyFix'
+      ];
+      
+      functions.forEach(funcName => {
+        const exists = typeof window[funcName] === 'function' || (funcName === 'apiKeyFix' && window[funcName]);
+        result += `- ${funcName}: ${exists ? '存在' : '不存在'}\n`;
+      });
+      
+      // 測試 localStorage
+      const localKey = localStorage.getItem('google_ai_api_key');
+      result += `- localStorage 中的 key: ${localKey ? '存在' : '不存在'}\n`;
+      
+      output.textContent = result;
+    }
+    
+    // 清除日誌
+    function clearLog() {
+      logMessages = [];
+      document.getElementById('debugLog').textContent = '日誌已清除...';
+    }
+    
+    // 匯出日誌
+    function exportLog() {
+      const logText = logMessages.join('\n');
+      const blob = new Blob([logText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'api-key-debug-log.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+      addLog('匯出調試日誌');
+    }
+    
+    // 頁面載入時初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      addLog('調試頁面已載入');
+      updateStatus();
+      
+      // 定期更新狀態
+      setInterval(updateStatus, 5000);
+    });
+  </script>
+</body>
+</html>

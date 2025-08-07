@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>API Key 快速測試</title>
+  <script defer="defer" src="./api-key-integration.js"></script>
+  <script defer="defer" src="./api-key-fix.js"></script>
+  <script defer="defer" src="./api-key-patch.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .status {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      font-weight: 500;
+    }
+    .status.valid {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .status.invalid {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      margin: 0.5rem;
+      transition: background-color 0.3s;
+    }
+    .button:hover {
+      background: #0056b3;
+    }
+    .button.success {
+      background: #28a745;
+    }
+    .button.success:hover {
+      background: #218838;
+    }
+    .button.danger {
+      background: #dc3545;
+    }
+    .button.danger:hover {
+      background: #c82333;
+    }
+    .output {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      border: 1px solid #e9ecef;
+      font-family: 'Courier New', monospace;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔧 API Key 快速測試</h1>
+    
+    <div id="status" class="status">
+      正在檢查 API Key 狀態...
+    </div>
+    
+    <div>
+      <button class="button success" onclick="setTestApiKey()">設置測試 API Key</button>
+      <button class="button" onclick="testGetApiKey()">測試 getApiKey()</button>
+      <button class="button" onclick="forceFix()">強制修復</button>
+      <button class="button danger" onclick="clearApiKey()">清除 API Key</button>
+    </div>
+    
+    <div id="output" class="output">
+      點擊按鈕開始測試...
+    </div>
+    
+    <div>
+      <h3>📋 測試步驟</h3>
+      <ol>
+        <li>點擊「設置測試 API Key」</li>
+        <li>點擊「測試 getApiKey()」確認函數正常工作</li>
+        <li>點擊「強制修復」執行修復</li>
+        <li>回到主應用程式測試功能</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    // 更新狀態顯示
+    function updateStatus() {
+      const apiKey = localStorage.getItem('google_ai_api_key') || '';
+      const statusDiv = document.getElementById('status');
+      const isValid = apiKey && apiKey.length >= 30;
+      
+      statusDiv.className = `status ${isValid ? 'valid' : 'invalid'}`;
+      statusDiv.innerHTML = isValid 
+        ? `✅ API Key 已設置且格式正確 (${apiKey.length} 個字符)`
+        : `❌ API Key 未設置或格式不正確 (當前: ${apiKey.length} 個字符)`;
+    }
+    
+    // 設置測試 API Key
+    function setTestApiKey() {
+      const testKey = 'test-api-key-' + Date.now() + '-very-long-key-for-testing-purposes';
+      localStorage.setItem('google_ai_api_key', testKey);
+      
+      const output = document.getElementById('output');
+      output.textContent = `✅ 已設置測試 API Key:\n- Key: ${testKey}\n- 長度: ${testKey.length} 個字符\n- 狀態: 已保存到 localStorage`;
+      
+      updateStatus();
+    }
+    
+    // 測試 getApiKey 函數
+    function testGetApiKey() {
+      const output = document.getElementById('output');
+      let result = `🔍 getApiKey() 函數測試:\n`;
+      
+      if (typeof window.getApiKey === 'function') {
+        try {
+          const apiKey = window.getApiKey();
+          result += `- 函數執行: 成功\n`;
+          result += `- 返回值: ${apiKey ? '有效' : '無效'}\n`;
+          result += `- 返回值長度: ${apiKey ? apiKey.length : 0} 個字符\n`;
+          
+          if (apiKey) {
+            result += `- 返回值前10個字符: ${apiKey.substring(0, 10)}...\n`;
+          }
+        } catch (error) {
+          result += `- 函數執行: 失敗\n`;
+          result += `- 錯誤: ${error.message}\n`;
+        }
+      } else {
+        result += `- 函數存在: 否\n`;
+      }
+      
+      output.textContent = result;
+    }
+    
+    // 強制修復
+    function forceFix() {
+      const output = document.getElementById('output');
+      let result = `🔧 強制修復執行:\n`;
+      
+      if (window.forceApiKeyFix) {
+        try {
+          const success = window.forceApiKeyFix();
+          result += `- 修復函數執行: 成功\n`;
+          result += `- 修復結果: ${success ? '成功' : '失敗'}\n`;
+        } catch (error) {
+          result += `- 修復函數執行: 失敗\n`;
+          result += `- 錯誤: ${error.message}\n`;
+        }
+      } else {
+        result += `- 修復函數: 不存在\n`;
+      }
+      
+      if (window.fixApiKeyIssue) {
+        try {
+          const success = window.fixApiKeyIssue();
+          result += `- fixApiKeyIssue() 執行: 成功\n`;
+          result += `- 修復結果: ${success ? '成功' : '失敗'}\n`;
+        } catch (error) {
+          result += `- fixApiKeyIssue() 執行: 失敗\n`;
+          result += `- 錯誤: ${error.message}\n`;
+        }
+      } else {
+        result += `- fixApiKeyIssue() 函數: 不存在\n`;
+      }
+      
+      output.textContent = result;
+    }
+    
+    // 清除 API Key
+    function clearApiKey() {
+      localStorage.removeItem('google_ai_api_key');
+      
+      const output = document.getElementById('output');
+      output.textContent = `🗑️ 已清除 API Key:\n- 狀態: 已清除\n- localStorage: 已清空`;
+      
+      updateStatus();
+    }
+    
+    // 頁面載入時初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      updateStatus();
+    });
+  </script>
+</body>
+</html>
