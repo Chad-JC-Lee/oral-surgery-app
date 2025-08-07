@@ -5,7 +5,7 @@
 ## 🚀 快速試用
 
 ### 線上試用版本
-- **GitHub Pages**: [點擊這裡試用](https://[your-username].github.io/oral-surgery-app/)
+- **GitHub Pages**: [點擊這裡試用](https://chad-jc-lee.github.io/oral-surgery-app/)
 - **本地運行**: 按照下方安裝步驟
 
 ### 功能演示
@@ -14,6 +14,49 @@
 - 📱 直觀易用的界面
 - 🔄 多層次症狀評估
 - 📊 詳細的症狀總結
+
+## 🔑 API Key 設置
+
+### 方法 1: 通過應用程式界面（推薦）
+
+1. **訪問應用程式**：
+   https://chad-jc-lee.github.io/oral-surgery-app/
+
+2. **自動檢測**：
+   - 應用程式會自動檢測是否已設置 API key
+   - 如果沒有設置，會顯示設置界面
+
+3. **輸入 API Key**：
+   - 在設置界面中輸入您的 Google AI API key
+   - 點擊保存即可開始使用
+
+### 方法 2: 通過瀏覽器控制台
+
+1. **打開開發者工具**：
+   - 按 F12 或右鍵選擇 "檢查"
+
+2. **在控制台中輸入**：
+   ```javascript
+   localStorage.setItem('google_ai_api_key', '您的API_KEY');
+   ```
+
+3. **刷新頁面**：
+   - 重新載入頁面即可使用
+
+### 獲取 Google AI API Key
+
+1. **訪問 Google AI Studio**：
+   - 前往 [Google AI Studio](https://makersuite.google.com/app/apikey)
+
+2. **創建 API Key**：
+   - 登入您的 Google 帳戶
+   - 點擊 "Create API Key"
+   - 複製生成的 API Key
+
+3. **安全注意事項**：
+   - 請勿在公開場合分享您的 API Key
+   - 定期更換 API Key 以確保安全
+   - 本應用程式不會將您的 API Key 發送到任何服務器
 
 ## 📦 安裝和運行
 
@@ -26,7 +69,7 @@
 
 1. **克隆項目**
 ```bash
-git clone https://github.com/[your-username]/oral-surgery-app.git
+git clone https://github.com/Chad-JC-Lee/oral-surgery-app.git
 cd oral-surgery-app
 ```
 
@@ -43,7 +86,7 @@ npm start
 4. **打開瀏覽器**
 訪問 `http://localhost:3000` 開始使用
 
-## 🔧 API設置說明
+## 🔧 本地開發 API設置說明
 
 ### Google AI API設置（可選）
 
@@ -59,164 +102,90 @@ npm start
    localStorage.setItem('google_ai_api_key', 'your-api-key-here');
    ```
 
-3. **或者設置環境變數**
+3. **或者創建 .env 文件**
    ```bash
-   # 創建 .env.local 文件
-   echo "REACT_APP_GOOGLE_AI_API_KEY=your-api-key-here" > .env.local
+   echo "REACT_APP_GOOGLE_AI_API_KEY=your-api-key-here" > .env
    ```
 
-### 關於API過載問題
+## 🏥 功能特色
 
-如果遇到"AI服務暫時過載"的錯誤，這可能是由於：
+### 症狀評估
+- 多層次症狀選擇
+- 疼痛程度評估
+- 時間軸症狀記錄
+- 症狀嚴重程度分析
 
-1. **API調用頻率過高**：系統會自動限制API調用次數（最多10次）
-2. **Google AI服務暫時不可用**：這是正常的服務波動
-3. **網絡連接問題**：檢查網絡連接
+### AI 輔助分析
+- 智能症狀分析
+- 專業醫療建議
+- 症狀總結報告
+- 後續追蹤建議
 
-#### 解決方案：
+### 用戶體驗
+- 直觀易用的界面
+- 響應式設計
+- 多語言支持
+- 無需註冊即可使用
 
-- **等待重試**：系統會自動重試失敗的請求
-- **使用預設選項**：當API不可用時，系統會自動使用預設的症狀選項
-- **重置應用程序**：點擊"重新開始"按鈕重置API調用計數器
+## 📊 使用流程
 
-## 📖 使用說明
+1. **開始評估**
+   - 點擊 "開始症狀評估"
+   - 選擇手術類型
 
-### 基本使用流程
+2. **症狀描述**
+   - 選擇相關症狀
+   - 評估疼痛程度
+   - 描述症狀時間
 
-1. **選擇主訴**：點擊最符合您症狀的選項
-2. **精細評估**：根據AI建議選擇更詳細的症狀描述
-3. **查看總結**：系統會顯示您的症狀評估總結
-4. **重新開始**：完成後可以重新開始新的評估
+3. **AI 分析**
+   - 獲取智能分析結果
+   - 查看專業建議
+   - 生成症狀報告
 
-### 症狀類型
+4. **保存結果**
+   - 下載症狀報告
+   - 分享給醫生
+   - 追蹤症狀變化
 
-系統支援以下症狀類型：
-- 疼痛 (Pain)
-- 腫脹 (Swelling)
-- 出血 (Bleeding)
-- 感染 (Infection)
-- 功能障礙 (Functional Issues)
-- 其他症狀 (Other Symptoms)
+## 🔒 隱私與安全
 
-## 🛠️ 技術架構
-
-### 前端技術
-- **框架**: React 18
-- **樣式**: Styled Components
-- **圖標**: Lucide React
-- **AI服務**: Google AI Studio (Gemini)
-
-### 項目結構
-```
-src/
-├── components/     # React組件
-│   └── ApiKeySetup.js
-├── config/        # 配置文件
-│   └── api.js
-├── services/      # API服務
-│   └── googleAiService.js
-├── App.js         # 主應用程序
-└── index.js       # 入口文件
-```
-
-## 🚀 部署到 GitHub Pages
-
-### 自動部署
-
-1. **推送到 GitHub**
-```bash
-git add .
-git commit -m "Initial commit"
-git push origin main
-```
-
-2. **設置 GitHub Pages**
-   - 進入 GitHub 倉庫設置
-   - 找到 "Pages" 選項
-   - 選擇 "Deploy from a branch"
-   - 選擇 `gh-pages` 分支
-
-3. **部署命令**
-```bash
-npm run deploy
-```
-
-### 手動部署
-
-如果您想要手動部署：
-
-```bash
-# 構建生產版本
-npm run build
-
-# 部署到 GitHub Pages
-npm run deploy
-```
-
-## 🔧 開發說明
-
-### 添加新的症狀類型
-
-1. 在 `symptoms` 數組中添加新的症狀定義
-2. 在 `getDefaultOptions` 和 `getDefaultSubOptions` 中添加對應的預設選項
-3. 更新AI提示詞以支持新的症狀類型
-
-### 本地開發
-
-```bash
-# 啟動開發服務器
-npm start
-
-# 運行測試
-npm test
-
-# 構建生產版本
-npm run build
-```
-
-## 🐛 故障排除
-
-### 常見問題
-
-1. **應用程序一直重新啟動**
-   - 原因：API調用過於頻繁
-   - 解決：等待幾分鐘後重試，或使用預設選項
-
-2. **API服務不可用**
-   - 原因：Google AI服務暫時過載
-   - 解決：系統會自動使用預設選項
-
-3. **界面無響應**
-   - 原因：正在處理API請求
-   - 解決：等待載入完成
-
-4. **GitHub Pages 無法訪問**
-   - 檢查倉庫設置中的 Pages 配置
-   - 確保 `gh-pages` 分支存在
-   - 等待部署完成（可能需要幾分鐘）
-
-## 📄 授權
-
-本項目僅供醫療教育目的使用，不應替代專業醫療建議。
+- ✅ 所有數據僅存儲在本地
+- ✅ 不會向任何服務器發送個人信息
+- ✅ API Key 僅存儲在瀏覽器本地
+- ✅ 無需註冊或登入
+- ✅ 完全開源，可審查代碼
 
 ## 🤝 貢獻
 
-歡迎提交 Issue 和 Pull Request 來改進這個項目！
-
-### 貢獻指南
+歡迎貢獻代碼或提出建議！
 
 1. Fork 這個項目
-2. 創建您的功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交您的更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 開啟一個 Pull Request
+2. 創建功能分支
+3. 提交更改
+4. 發起 Pull Request
 
-## 📞 聯繫方式
+## 📄 授權
 
-如果您有任何問題或建議，請：
-- 提交 GitHub Issue
-- 發送郵件到：[your-email@example.com]
+本項目採用 MIT 授權 - 查看 [LICENSE](LICENSE) 文件了解詳情。
+
+## 📞 支持
+
+如果您遇到問題或有建議，請：
+
+1. 查看 [Issues](https://github.com/Chad-JC-Lee/oral-surgery-app/issues)
+2. 創建新的 Issue
+3. 聯繫開發團隊
+
+## 🆕 更新日誌
+
+### v1.0.0
+- 初始版本發布
+- 基本症狀評估功能
+- AI 輔助分析
+- 響應式設計
+- GitHub Pages 部署
 
 ---
 
-**注意**: 這是一個醫療教育工具，不應替代專業醫療建議。如有醫療問題，請諮詢專業醫生。 
+**注意**：本應用程式僅供參考，不能替代專業醫療建議。如有醫療問題，請諮詢專業醫生。 
