@@ -13,12 +13,27 @@ const SetupContainer = styled.div`
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   max-width: 400px;
+  animation: slideIn 0.3s ease-out;
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
 `;
 
 const Title = styled.h3`
   margin: 0 0 15px 0;
   color: #2c3e50;
   font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;
 
 const Input = styled.input`
@@ -44,8 +59,10 @@ const Button = styled.button`
   cursor: pointer;
   font-size: 14px;
   margin-right: 8px;
+  transition: all 0.2s ease;
   &:hover {
     background: #5a6fd8;
+    transform: translateY(-1px);
   }
 `;
 
@@ -69,15 +86,26 @@ const Status = styled.div`
   `}
 `;
 
+const HelpText = styled.div`
+  font-size: 11px;
+  color: #666;
+  margin-top: 8px;
+  line-height: 1.4;
+`;
+
 const ApiKeySetup = () => {
   const [apiKey, setApiKeyState] = useState('');
   const [status, setStatus] = useState('');
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const existingKey = getApiKey();
     if (existingKey) {
       setStatus('API key已設置');
+    } else {
+      setStatus('請設置API key以使用AI功能');
     }
+    setIsVisible(true);
   }, []);
 
   const handleSave = () => {
@@ -136,13 +164,13 @@ const ApiKeySetup = () => {
     }
   };
 
-  if (process.env.NODE_ENV !== 'development') {
+  if (!isVisible) {
     return null;
   }
 
   return (
     <SetupContainer>
-      <Title>Google AI API Key 設置</Title>
+      <Title>🔑 Google AI API Key 設置</Title>
       <Input
         type="password"
         placeholder="請輸入您的Google AI API Key"
@@ -161,6 +189,9 @@ const ApiKeySetup = () => {
           {status}
         </Status>
       )}
+      <HelpText>
+        💡 提示：您可以在 <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Google AI Studio</a> 獲取免費的 API Key
+      </HelpText>
     </SetupContainer>
   );
 };
