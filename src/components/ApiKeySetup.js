@@ -96,16 +96,15 @@ const HelpText = styled.div`
 const ApiKeySetup = () => {
   const [apiKey, setApiKeyState] = useState('');
   const [status, setStatus] = useState('');
-  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    console.log('ApiKeySetup 組件已載入');
     const existingKey = getApiKey();
     if (existingKey) {
       setStatus('API key已設置');
     } else {
       setStatus('請設置API key以使用AI功能');
     }
-    setIsVisible(true);
   }, []);
 
   const handleSave = () => {
@@ -163,10 +162,6 @@ const ApiKeySetup = () => {
       setStatus('API測試失敗: ' + error.message);
     }
   };
-
-  if (!isVisible) {
-    return null;
-  }
 
   return (
     <SetupContainer>
