@@ -2,7 +2,7 @@
   "name": "oral-surgery-patient-app",
   "version": "1.0.0",
   "description": "口腔癌術後病人主訴表達軟體",
-  "homepage": "https://Chad-JC-Lee.github.io/oral-surgery-app",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
